@@ -9,8 +9,10 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.marg.qa.util.TestUtil;
+import com.marg.qa.util.WebEventListener;
 import com.marg.qa.util.Xls_Reader;
 
 public class TestBase {
@@ -18,6 +20,8 @@ public class TestBase {
 	public static Properties prop;
 	public static WebDriver driver;
 	public static Xls_Reader reader;
+	public static WebEventListener EventListener;
+	public static EventFiringWebDriver e_driver;
 	
 	public TestBase(){
 		try {
@@ -40,6 +44,13 @@ public class TestBase {
 					"E:\\Marg\\NewMargWeb\\Marg_ERP\\src\\main\\java\\driver\\chromedriver.exe");	
 			driver = new ChromeDriver(); 
 		}
+		
+		 e_driver = new EventFiringWebDriver(driver);	//EventFiringWebDriver class object
+			//Create object of EvenetListenerHandler to register it with EventFiringWebDriver
+		 EventListener = new WebEventListener();		//com.vienna.qa.utils.WebEventListener
+		 e_driver.register(EventListener); 	// we have to register EventListener with EventFiringWebDriver
+		 driver = e_driver;			//we have to assign the EventFiringWebDriver[e_driver] to the driver
+		
 		driver.manage().window().maximize();
 		driver.manage().deleteAllCookies();
 		driver.manage().timeouts().pageLoadTimeout(TestUtil.PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
